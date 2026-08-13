@@ -1,0 +1,16 @@
+node_modules/
+.env
+.env.local
+dist/
+build/
+.next/
+.vscode/
+.DS_Store
+venv/
+__pycache__/
+*.pyc
+banktxcleaned.csv
+accountTransactionHistory (1).xls
+
+banktxcleaned.csv
+accountTransactionHistory (1).xls

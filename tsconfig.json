@@ -1,0 +1,67 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "target": "ES2017",
+    // ⭐ ADD THESE TWO SECTIONS ⭐
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/lib/*": [
+        "lib/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "components/ui/pagination.jsx",
+    "components/ui/data-table.jsx",
+    "components/ui/search.jsx",
+    "app/dashboard/components/axles/overloads-linegraph.jsx",
+    "components/ui/skeletons.jsx",
+    "app/hooks/useMediaquery.js",
+    "app/dashboard/components/mombile-nav.jsx",
+    "app/dashboard/layout.js",
+    "app/dashboard/components/menu-title.jsx",
+    "app/dashboard/components/menu-item.jsx",
+    "app/dashboard/components/main-menu.jsx",
+    "app/dashboard/components/card-skeleton.jsx",
+    "app/(logged-out)/login/page.jsx",
+    ".next/dev/types/**/*.ts",
+    "app/dashboard/components/app-sidebar.jsx",
+    "app/dashboard/invoices/components/Invoicetable.jsx",
+    "components/sidebar-content-grouped.jsx",
+    "app/mongodb/actions/account-actions.js",
+    "app/mongodb/actions/party-actions.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
