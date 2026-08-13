@@ -30,13 +30,13 @@ export function NextThemeToggler() {
     );
   }
   return (
-    <div className="px-4 py-2 border-t border-border">
+    <div className="px-4 py-2 border-t border-sidebar-border">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-start gap-3 text-foreground/70 hover:bg-accent hover:text-foreground"
+            className="w-full justify-start gap-3 text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
           >
             {theme === "light" ? (
               <Sun className="w-5 h-5" />

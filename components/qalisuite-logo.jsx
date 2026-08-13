@@ -19,9 +19,9 @@ function IconSvg({ className, id = "qs" }) {
     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
       <defs>
         <linearGradient id={`${id}-grad`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#FDE047" />
-          <stop offset="50%" stopColor="#EAB308" />
-          <stop offset="100%" stopColor="#A16207" />
+          <stop offset="0%" stopColor="#E4C466" />
+          <stop offset="50%" stopColor="#C8960C" />
+          <stop offset="100%" stopColor="#8A6608" />
         </linearGradient>
         <filter id={`${id}-shadow`}>
           <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodOpacity="0.15" />
@@ -93,9 +93,9 @@ export function QaliSuiteLogo({ className = "h-11" }) {
       <svg viewBox="0 0 200 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-auto">
         <defs>
           <linearGradient id="qs-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FDE047" />
-            <stop offset="50%" stopColor="#EAB308" />
-            <stop offset="100%" stopColor="#A16207" />
+            <stop offset="0%" stopColor="#E4C466" />
+            <stop offset="50%" stopColor="#C8960C" />
+            <stop offset="100%" stopColor="#8A6608" />
           </linearGradient>
           <filter id="qs-logo-shadow">
             <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodOpacity="0.15" />
@@ -108,7 +108,7 @@ export function QaliSuiteLogo({ className = "h-11" }) {
         {/* Text */}
         <text x="54" y="28" fontFamily="system-ui, -apple-system, 'Segoe UI', sans-serif" fontSize="22" fontWeight="700" fill="currentColor" letterSpacing="-0.5">
           <tspan>Qali</tspan>
-          <tspan fill="#EAB308">Suite</tspan>
+          <tspan fill="#C8960C">Suite</tspan>
         </text>
         <text x="54" y="42" fontFamily="system-ui, -apple-system, 'Segoe UI', sans-serif" fontSize="9" fontWeight="500" className="fill-muted-foreground" letterSpacing="2.5">
           ERP SYSTEM

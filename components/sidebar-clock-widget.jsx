@@ -89,7 +89,7 @@ export function SidebarClockWidget({ collapsed }) {
           <button
             onClick={!isClockedOut ? (isClockedIn ? handleClockOut : handleClockIn) : undefined}
             disabled={isPending || isClockedOut}
-            className="relative w-full flex items-center justify-center p-2.5 rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground transition-all"
+            className="relative w-full flex items-center justify-center p-2.5 rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-all"
           >
             {isPending
               ? <Loader2 className="w-5 h-5 animate-spin" />
@@ -106,24 +106,24 @@ export function SidebarClockWidget({ collapsed }) {
   // ── Expanded ─────────────────────────────────────────────────────────────
   return (
     <div className="px-3 pb-2">
-      <div className="flex items-center justify-between gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2">
+      <div className="flex items-center justify-between gap-2 rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2">
         {/* Status */}
         <div className="flex items-center gap-2 min-w-0">
           <div className={`shrink-0 w-2 h-2 rounded-full ${isClockedIn ? "bg-emerald-500" : isClockedOut ? "bg-muted-foreground" : "bg-amber-500"}`} />
           <div className="min-w-0">
             {isClockedIn ? (
               <>
-                <p className="text-xs font-medium text-foreground truncate">
+                <p className="text-xs font-medium text-sidebar-foreground truncate">
                   {fmtTime(record.checkIn)}
-                  {elapsed && <span className="text-muted-foreground"> · {elapsed}</span>}
+                  {elapsed && <span className="text-sidebar-foreground/60"> · {elapsed}</span>}
                 </p>
               </>
             ) : isClockedOut ? (
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="text-xs text-sidebar-foreground/60 truncate">
                 Done · {record.hoursWorked?.toFixed(1)}h
               </p>
             ) : (
-              <p className="text-xs text-muted-foreground">Not clocked in</p>
+              <p className="text-xs text-sidebar-foreground/60">Not clocked in</p>
             )}
           </div>
         </div>
@@ -135,7 +135,7 @@ export function SidebarClockWidget({ collapsed }) {
             disabled={isPending}
             className={`shrink-0 flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors ${
               isClockedIn
-                ? "border border-border text-muted-foreground hover:bg-accent hover:text-foreground"
+                ? "border border-sidebar-border text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                 : "bg-emerald-500 text-white hover:bg-emerald-600"
             }`}
           >

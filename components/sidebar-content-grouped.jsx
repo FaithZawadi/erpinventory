@@ -752,8 +752,8 @@ const NavGroup = ({ group, user, onItemClick, collapsed }) => {
               <button
                 className={clsx(
                   "w-full flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-all duration-200",
-                  "text-muted-foreground hover:bg-accent hover:text-foreground",
-                  { "bg-accent/50 text-foreground": hasActiveChild }
+                  "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                  { "bg-sidebar-accent text-sidebar-foreground": hasActiveChild }
                 )}
               >
                 <group.icon className="w-5 h-5 shrink-0" />
@@ -795,9 +795,9 @@ const NavGroup = ({ group, user, onItemClick, collapsed }) => {
         onClick={() => setIsOpen(!isOpen)}
         className={clsx(
           "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
-          "text-muted-foreground hover:bg-accent hover:text-foreground",
+          "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
           {
-            "bg-accent/50 text-foreground": hasActiveChild,
+            "bg-sidebar-accent text-sidebar-foreground": hasActiveChild,
           }
         )}
       >
@@ -825,7 +825,7 @@ const NavGroup = ({ group, user, onItemClick, collapsed }) => {
           Requests" under Inventory at certain widths). */}
       <div
         className={clsx(
-          "ml-3 pl-3 border-l-2 border-border grid transition-[grid-template-rows,opacity] duration-200",
+          "ml-3 pl-3 border-l-2 border-sidebar-border grid transition-[grid-template-rows,opacity] duration-200",
           isOpen
             ? "grid-rows-[1fr] opacity-100"
             : "grid-rows-[0fr] opacity-0"
@@ -864,7 +864,7 @@ const NavItem = ({ item, onItemClick, collapsed }) => {
               "group w-full flex items-center justify-center p-2.5 rounded-lg text-sm font-medium transition-all duration-200",
               {
                 "bg-yellow-500 text-black shadow-sm hover:shadow-md": active,
-                "text-muted-foreground hover:bg-accent hover:text-foreground": !active,
+                "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground": !active,
               }
             )}
           >
@@ -890,7 +890,7 @@ const NavItem = ({ item, onItemClick, collapsed }) => {
         "group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
         {
           "bg-yellow-500 text-black shadow-sm hover:shadow-md": active,
-          "text-muted-foreground hover:bg-accent hover:text-foreground":
+          "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground":
             !active,
         }
       )}
@@ -925,9 +925,9 @@ export const SidebarContentGrouped = ({ onItemClick, user, collapsed }) => {
 
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="flex flex-col h-full bg-card overflow-hidden">
+      <div className="flex flex-col h-full bg-sidebar overflow-hidden">
         {/* Logo */}
-        <div className={clsx("border-b border-border", collapsed ? "p-3" : "p-4 md:p-5")}>
+        <div className={clsx("border-b border-sidebar-border", collapsed ? "p-3" : "p-4 md:p-5")}>
           <Link
             href="/dashboard"
             className="flex items-center group"
@@ -936,7 +936,7 @@ export const SidebarContentGrouped = ({ onItemClick, user, collapsed }) => {
             {collapsed ? (
               <QaliSuiteIcon className="w-10 h-10 group-hover:scale-105 transition-transform" />
             ) : (
-              <QaliSuiteMark size="md" subtitle="ERP System" className="group-hover:scale-[1.02] transition-transform" />
+              <QaliSuiteMark size="md" subtitle="ERP System" light className="group-hover:scale-[1.02] transition-transform" />
             )}
           </Link>
         </div>
@@ -949,7 +949,7 @@ export const SidebarContentGrouped = ({ onItemClick, user, collapsed }) => {
               <TooltipTrigger asChild>
                 <button
                   onClick={() => openCommandPalette(true)}
-                  className="group w-full flex items-center justify-center p-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-all duration-200"
+                  className="group w-full flex items-center justify-center p-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-all duration-200"
                 >
                   <Search className="w-5 h-5 transition-transform group-hover:scale-110" />
                 </button>
@@ -961,7 +961,7 @@ export const SidebarContentGrouped = ({ onItemClick, user, collapsed }) => {
           ) : (
             <button
               onClick={() => openCommandPalette(true)}
-              className="group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-all duration-200"
+              className="group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-all duration-200"
             >
               <Search className="w-4 h-4 transition-transform group-hover:scale-110" />
               <span>Search</span>
@@ -1005,13 +1005,13 @@ export const SidebarContentGrouped = ({ onItemClick, user, collapsed }) => {
         {!collapsed && <NextThemeToggler />}
 
         {/* User Profile */}
-        <div className={clsx("border-t border-border bg-muted/30", collapsed ? "p-2" : "p-4")}>
+        <div className={clsx("border-t border-sidebar-border", collapsed ? "p-2" : "p-4")}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               {collapsed ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button className="w-full flex items-center justify-center hover:bg-accent p-2 rounded-lg transition-all duration-200">
+                    <button className="w-full flex items-center justify-center hover:bg-sidebar-accent p-2 rounded-lg transition-all duration-200">
                       <Avatar className="w-8 h-8 ring-2 ring-border">
                         <AvatarImage
                           src={user?.image || "https://github.com/shadcn.png"}
@@ -1028,7 +1028,7 @@ export const SidebarContentGrouped = ({ onItemClick, user, collapsed }) => {
                   </TooltipContent>
                 </Tooltip>
               ) : (
-                <button className="w-full flex items-center gap-3 hover:bg-accent p-2.5 rounded-lg transition-all duration-200">
+                <button className="w-full flex items-center gap-3 hover:bg-sidebar-accent p-2.5 rounded-lg transition-all duration-200">
                   <Avatar className="w-10 h-10 ring-2 ring-border">
                     <AvatarImage
                       src={user?.image || "https://github.com/shadcn.png"}
@@ -1039,10 +1039,10 @@ export const SidebarContentGrouped = ({ onItemClick, user, collapsed }) => {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0 text-left">
-                    <p className="text-sm font-semibold text-foreground truncate">
+                    <p className="text-sm font-semibold text-sidebar-foreground truncate">
                       {user?.name}
                     </p>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-xs text-sidebar-foreground/60 truncate">
                       {user?.role || "User"}
                     </p>
                   </div>
