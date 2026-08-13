@@ -836,7 +836,7 @@ const NavGroup = ({ group, user, onItemClick, collapsed }) => {
                   { "bg-sidebar-accent text-sidebar-foreground": hasActiveChild }
                 )}
               >
-                <group.icon className="w-5 h-5 shrink-0" />
+                <group.icon className="w-5 h-5 shrink-0 text-yellow-500" />
               </button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
@@ -882,7 +882,7 @@ const NavGroup = ({ group, user, onItemClick, collapsed }) => {
         )}
       >
         <div className="flex items-center gap-3">
-          <group.icon className="w-5 h-5" />
+          <group.icon className="w-5 h-5 text-yellow-500" />
           <span>{group.label}</span>
           {group.badge && (
             <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-yellow-500 text-black font-bold">
@@ -949,9 +949,10 @@ const NavItem = ({ item, onItemClick, collapsed }) => {
             )}
           >
             <item.icon
-              className={clsx("w-5 h-5 transition-transform group-hover:scale-110", {
-                "text-black": active,
-              })}
+              className={clsx(
+                "w-5 h-5 transition-transform group-hover:scale-110",
+                active ? "text-black" : "text-yellow-500",
+              )}
             />
           </Link>
         </TooltipTrigger>
@@ -976,9 +977,10 @@ const NavItem = ({ item, onItemClick, collapsed }) => {
       )}
     >
       <item.icon
-        className={clsx("w-4 h-4 transition-transform group-hover:scale-110", {
-          "text-black": active,
-        })}
+        className={clsx(
+          "w-4 h-4 transition-transform group-hover:scale-110",
+          active ? "text-black" : "text-yellow-500",
+        )}
       />
       <span
         className={clsx("font-medium", {
