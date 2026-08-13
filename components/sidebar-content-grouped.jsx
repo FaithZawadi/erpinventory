@@ -36,6 +36,14 @@ import {
   ClipboardCheck,
   ShieldAlert,
   Target,
+  Truck,
+  FlaskConical,
+  Gavel,
+  HardHat,
+  Store,
+  ListChecks,
+  Award,
+  Link2,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -97,6 +105,15 @@ const getNavigationGroups = (user) => {
     label: "Dashboard",
     id: "dashboard",
     href: "/dashboard",
+  },
+
+  // My Workspace (ungrouped — personal home, adapted from ERP)
+  {
+    type: "single",
+    icon: User,
+    label: "My Workspace",
+    id: "workspace",
+    href: "/dashboard/workspace",
   },
 
   // Approvals (ungrouped — visible only to approver roles)
@@ -701,6 +718,69 @@ const getNavigationGroups = (user) => {
     id: "integration",
     href: "/dashboard/integrations",
     hidden: user?.role !== "Admin" || !hasMod("integration"),
+  },
+
+  // ============================================
+  // TECHNICAL (adapted from ERP — dummy data)
+  // ============================================
+  {
+    type: "group",
+    label: "Technical",
+    icon: FlaskConical,
+    id: "technical",
+    defaultOpen: false,
+    items: [
+      { icon: FlaskConical, label: "Calibration (17025)", id: "calibration", href: "/dashboard/calibration" },
+      { icon: Search, label: "Inspection (17020)", id: "inspection", href: "/dashboard/inspection" },
+    ],
+  },
+
+  // ============================================
+  // OPERATIONS (adapted from ERP — dummy data)
+  // ============================================
+  {
+    type: "group",
+    label: "Operations",
+    icon: Truck,
+    id: "operations",
+    defaultOpen: false,
+    items: [
+      { icon: Truck, label: "Fleet", id: "fleet", href: "/dashboard/fleet" },
+      { icon: ListChecks, label: "Tasks", id: "tasks", href: "/dashboard/tasks" },
+      { icon: HardHat, label: "HSE", id: "hse", href: "/dashboard/hse" },
+    ],
+  },
+
+  // ============================================
+  // QUALITY & COMPLIANCE (adapted from ERP — dummy data)
+  // ============================================
+  {
+    type: "group",
+    label: "Quality & Compliance",
+    icon: Award,
+    id: "quality",
+    defaultOpen: false,
+    items: [
+      { icon: Target, label: "Quality (QMS)", id: "qms", href: "/dashboard/qms" },
+      { icon: ClipboardCheck, label: "Compliance", id: "compliance", href: "/dashboard/compliance" },
+      { icon: BookOpen, label: "SOP Library", id: "sops", href: "/dashboard/sops" },
+    ],
+  },
+
+  // ============================================
+  // COMMERCIAL EXTRAS (adapted from ERP — dummy data)
+  // ============================================
+  {
+    type: "group",
+    label: "Pre-Sales & Shop",
+    icon: Gavel,
+    id: "presales",
+    defaultOpen: false,
+    items: [
+      { icon: Gavel, label: "Bids & Pre-Sales", id: "bids", href: "/dashboard/bids" },
+      { icon: Store, label: "Online Shop", id: "shop", href: "/dashboard/shop" },
+      { icon: Link2, label: "Inter-Company", id: "inter-company", href: "/dashboard/inter-company" },
+    ],
   },
 
   // ============================================
