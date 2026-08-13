@@ -58,16 +58,16 @@
    genuine "warning / pending" status colour, which QSL also uses.
    ============================================ */
 @theme {
-  --color-yellow-50: #fbf7ea;
-  --color-yellow-100: #f6ebc6;
-  --color-yellow-200: #ecd79a;
-  --color-yellow-300: #e0c063;
-  --color-yellow-400: #d3a933;
-  --color-yellow-500: #c8960c;
-  --color-yellow-600: #a87d0a;
-  --color-yellow-700: #856108;
-  --color-yellow-800: #664b09;
-  --color-yellow-900: #4c380b;
+  --color-yellow-50: #fdf8e9;
+  --color-yellow-100: #f9eec6;
+  --color-yellow-200: #f2dc93;
+  --color-yellow-300: #ecc858;
+  --color-yellow-400: #e6b32e;
+  --color-yellow-500: #e0a80c;
+  --color-yellow-600: #bd8a0a;
+  --color-yellow-700: #976c09;
+  --color-yellow-800: #71510a;
+  --color-yellow-900: #4f390b;
   --color-yellow-950: #2c2005;
 }
 
@@ -244,22 +244,22 @@
   --input: #e2e8f0;
   --ring: #1b3a5c;
 
-  /* Charts — QSL categorical palette (navy, gold, green, blue, purple) */
-  --chart-1: #1b3a5c;
-  --chart-2: #c8960c;
-  --chart-3: #1e6b3c;
-  --chart-4: #0070c0;
-  --chart-5: #6a0dad;
+  /* Charts — vibrant categorical palette (violet, gold, emerald, blue, rose) */
+  --chart-1: #8b5cf6;
+  --chart-2: #e0a80c;
+  --chart-3: #10b981;
+  --chart-4: #3b82f6;
+  --chart-5: #f43f5e;
 
   /* Sidebar — dark navy shell with gold active items */
   --sidebar: #0d2238;
   --sidebar-foreground: #e7edf3;
-  --sidebar-primary: #c8960c;
+  --sidebar-primary: #e0a80c;
   --sidebar-primary-foreground: #0d2238;
   --sidebar-accent: #1b3a5c;
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #c8960c;
+  --sidebar-ring: #e0a80c;
 }
 
 .dark {
@@ -292,22 +292,22 @@
   /* Borders / inputs / focus ring (gold) */
   --border: #21415f;
   --input: #21415f;
-  --ring: #c8960c;
+  --ring: #e0a80c;
 
-  /* Charts */
-  --chart-1: #2e5f8a;
-  --chart-2: #c8960c;
-  --chart-3: #2e8b57;
-  --chart-4: #0070c0;
-  --chart-5: #9b59b6;
+  /* Charts — vibrant, lifted for dark surfaces */
+  --chart-1: #a78bfa;
+  --chart-2: #e0a80c;
+  --chart-3: #34d399;
+  --chart-4: #60a5fa;
+  --chart-5: #fb7185;
 
   /* Sidebar — stays navy in both modes */
   --sidebar: #0b1b2b;
   --sidebar-foreground: #e7edf3;
-  --sidebar-primary: #c8960c;
+  --sidebar-primary: #e0a80c;
   --sidebar-primary-foreground: #0b1b2b;
   --sidebar-accent: #1b3a5c;
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #c8960c;
+  --sidebar-ring: #e0a80c;
 }
