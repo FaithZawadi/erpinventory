@@ -5,7 +5,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 export function MobileNav({ mobileMenuOpen, setMobileMenuOpen, user }) {
   return (
     <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-      <SheetContent side="left" className="w-64 p-0 bg-card border-border">
+      <SheetContent side="left" className="w-64 p-0 bg-sidebar border-sidebar-border">
         {/* Hidden title for accessibility */}
         <VisuallyHidden>
           <SheetTitle>Navigation Menu</SheetTitle>

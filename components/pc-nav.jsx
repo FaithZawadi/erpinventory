@@ -6,7 +6,7 @@ export function PcNav({ user, collapsed, onToggle }) {
   return (
     <aside
       className={cn(
-        "hidden lg:flex bg-card border-r border-border flex-col h-screen sticky top-0 shrink-0 transition-all duration-300",
+        "hidden lg:flex bg-sidebar border-r border-sidebar-border flex-col h-screen sticky top-0 shrink-0 transition-all duration-300",
         collapsed ? "w-17" : "w-64"
       )}
     >
@@ -14,7 +14,7 @@ export function PcNav({ user, collapsed, onToggle }) {
       {/* Collapse toggle button */}
       <button
         onClick={onToggle}
-        className="absolute -right-3 top-7 z-20 w-6 h-6 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shadow-sm"
+        className="absolute -right-3 top-7 z-20 w-6 h-6 rounded-full bg-sidebar border border-sidebar-border flex items-center justify-center text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors shadow-sm"
       >
         {collapsed ? (
           <PanelLeftOpen className="w-3.5 h-3.5" />
