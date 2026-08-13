@@ -45,12 +45,12 @@ export const getFinancialOverview = async () => {
     revenueAccounts,
     expenseAccounts,
   ] = await Promise.all([
-    Account.findOne({ ...tenantMatch, systemAccount: "petty_cash" }),
-    Account.findOne({ ...tenantMatch, systemAccount: "cash_at_bank" }),
-    Account.findOne({ ...tenantMatch, systemAccount: "accounts_receivable" }),
-    Account.findOne({ ...tenantMatch, systemAccount: "accounts_payable" }),
-    Account.find({ ...tenantMatch, accountType: "revenue", isActive: true }),
-    Account.find({ ...tenantMatch, accountType: "expense", isActive: true }),
+    Account.findOne({ ...tenantMatch, systemAccount: "petty_cash" }).lean(),
+    Account.findOne({ ...tenantMatch, systemAccount: "cash_at_bank" }).lean(),
+    Account.findOne({ ...tenantMatch, systemAccount: "accounts_receivable" }).lean(),
+    Account.findOne({ ...tenantMatch, systemAccount: "accounts_payable" }).lean(),
+    Account.find({ ...tenantMatch, accountType: "revenue", isActive: true }).lean(),
+    Account.find({ ...tenantMatch, accountType: "expense", isActive: true }).lean(),
   ]);
 
   // Get revenue and expense aggregates (CORRECTED)
