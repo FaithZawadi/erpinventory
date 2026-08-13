@@ -1094,7 +1094,7 @@ export const SidebarContentGrouped = ({ onItemClick, user, collapsed }) => {
                     <button className="w-full flex items-center justify-center hover:bg-sidebar-accent p-2 rounded-lg transition-all duration-200">
                       <Avatar className="w-8 h-8 ring-2 ring-border">
                         <AvatarImage
-                          src={user?.image || "https://github.com/shadcn.png"}
+                          src={user?.image || undefined}
                           alt={user?.name}
                         />
                         <AvatarFallback className="bg-yellow-500 text-black font-bold text-xs">
