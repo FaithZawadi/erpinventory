@@ -89,6 +89,33 @@ export function MetricCard({
 }: MetricCardProps) {
   const Icon = icons[icon];
 
+  // Colored icon "chip" — the main thing that gives KPI cards their colour
+  // (matches the ERP dashboard's Stat tiles). We derive a soft tinted
+  // background + a stronger icon tone from the `iconColor` each dashboard
+  // already passes, so no call site has to change. Every class here is a
+  // literal string so Tailwind statically generates it.
+  const TONES: Record<string, { bg: string; fg: string }> = {
+    blue: { bg: "bg-blue-500/10", fg: "text-blue-600 dark:text-blue-400" },
+    emerald: { bg: "bg-emerald-500/10", fg: "text-emerald-600 dark:text-emerald-400" },
+    green: { bg: "bg-green-500/10", fg: "text-green-600 dark:text-green-400" },
+    violet: { bg: "bg-violet-500/10", fg: "text-violet-600 dark:text-violet-400" },
+    purple: { bg: "bg-purple-500/10", fg: "text-purple-600 dark:text-purple-400" },
+    red: { bg: "bg-red-500/10", fg: "text-red-600 dark:text-red-400" },
+    rose: { bg: "bg-rose-500/10", fg: "text-rose-600 dark:text-rose-400" },
+    orange: { bg: "bg-orange-500/10", fg: "text-orange-600 dark:text-orange-400" },
+    amber: { bg: "bg-amber-500/10", fg: "text-amber-600 dark:text-amber-400" },
+    yellow: { bg: "bg-yellow-500/15", fg: "text-yellow-600 dark:text-yellow-400" },
+    cyan: { bg: "bg-cyan-500/10", fg: "text-cyan-600 dark:text-cyan-400" },
+    indigo: { bg: "bg-indigo-500/10", fg: "text-indigo-600 dark:text-indigo-400" },
+    pink: { bg: "bg-pink-500/10", fg: "text-pink-600 dark:text-pink-400" },
+    teal: { bg: "bg-teal-500/10", fg: "text-teal-600 dark:text-teal-400" },
+    sky: { bg: "bg-sky-500/10", fg: "text-sky-600 dark:text-sky-400" },
+    primary: { bg: "bg-primary/10", fg: "text-primary" },
+  };
+  const toneKey =
+    Object.keys(TONES).find((k) => iconColor.includes(k)) || "yellow";
+  const chip = TONES[toneKey];
+
   // Trend indicator
   const TrendIcon =
     trend === undefined
@@ -127,11 +154,13 @@ export function MetricCard({
           <div className="flex items-center gap-1.5 shrink-0">
             {alert && (
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
               </span>
             )}
-            <Icon className={cn("w-3.5 h-3.5", iconColor)} />
+            <span className={cn("inline-flex items-center justify-center w-8 h-8 rounded-lg", chip.bg)}>
+              <Icon className={cn("w-4 h-4", chip.fg)} />
+            </span>
           </div>
         </div>
 
