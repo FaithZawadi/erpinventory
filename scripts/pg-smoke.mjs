@@ -2,7 +2,10 @@
 // Run after `prisma migrate`:
 //   node scripts/pg-smoke.mjs
 // It creates a company + user + product, reads them back, and prints them.
-import { PrismaClient } from "@prisma/client";
+// Default-import destructure works whether @prisma/client resolves as CJS or
+// ESM (avoids "Named export 'PrismaClient' not found" under some versions).
+import pkg from "@prisma/client";
+const { PrismaClient } = pkg;
 
 const prisma = new PrismaClient();
 

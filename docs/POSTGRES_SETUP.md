@@ -16,22 +16,35 @@ explicitly flip a flag. Full plan: `POSTGRES_MIGRATION_PLAN.md`.
 
 ## 1. Install dependencies
 
+Pin to Prisma **6** — Prisma 7 moved the datasource URL out of the schema into a
+`prisma.config.ts` and ships a CJS-only client, which this slice doesn't target.
+
 ```
-npm install -D prisma
-npm install @prisma/client
+npm install -D prisma@6
+npm install @prisma/client@6
 ```
 
 ## 2. Start Postgres
 
+Pick ONE source:
+
+- **Docker** (needs Docker Desktop *running*):
+  ```
+  docker compose -f docker-compose.postgres.yml up -d
+  ```
+- **Homebrew** (no Docker): `brew install postgresql@16 && brew services start postgresql@16`
+  then `createdb erpinventory`.
+- **Cloud** (easiest, no local install): create a free database at Neon or
+  Supabase and copy its connection string.
+
+Then put the URL in **`.env.local`** (the file — do **not** paste it into the
+shell; zsh treats the `?` as a glob and errors). For local Docker/Homebrew:
+
 ```
-docker compose -f docker-compose.postgres.yml up -d
+DATABASE_URL="postgresql://erp:erp@localhost:5432/erpinventory?schema=public"
 ```
 
-Add to `.env.local`:
-
-```
-DATABASE_URL=postgresql://erp:erp@localhost:5432/erpinventory?schema=public
-```
+For a cloud DB, paste the provider's URL instead (keep the quotes).
 
 ## 3. Create the schema
 
