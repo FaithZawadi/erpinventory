@@ -44,6 +44,7 @@ import {
   ListChecks,
   Award,
   Link2,
+  Database,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -793,6 +794,16 @@ const getNavigationGroups = (user) => {
     id: "settings",
     href: "/dashboard/settings",
     hidden: !canSeeSettingsNav(user?.role) && user?.role !== "HR",
+  },
+
+  // Database / Postgres migration status (Admin / SuperAdmin)
+  {
+    type: "single",
+    icon: Database,
+    label: "Database",
+    id: "database",
+    href: "/dashboard/settings/database",
+    hidden: !["Admin", "SuperAdmin"].includes(user?.role),
   },
 ];
 }; // end getNavigationGroups
