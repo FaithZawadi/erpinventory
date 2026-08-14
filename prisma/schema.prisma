@@ -1,0 +1,129 @@
+// Prisma schema — Phase 0 of the MongoDB → PostgreSQL migration.
+// Covers the CORE slice (tenant + auth + inventory) so the pattern can be
+// proven end-to-end before scaling to the remaining models. See
+// docs/POSTGRES_MIGRATION_PLAN.md for the staged plan and
+// docs/POSTGRES_SETUP.md for the runbook.
+//
+// Notes on translation choices:
+//  - PKs are uuid; `legacyMongoId` preserves the Mongo _id so the ETL can
+//    re-point references to the new uuid foreign keys.
+//  - role/status/movementType/direction are kept as String (not Prisma enums)
+//    to preserve the exact Mongo string values ("Finance Manager", etc.) with
+//    zero value-mapping during ETL. Tighten to enums/CHECKs later if desired.
+//  - Genuinely document-shaped sub-objects (inventory, costing, customFields)
+//    are Json for now; promote the ones you query/aggregate on to child tables
+//    as each module is hardened.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id            String   @id @default(uuid())
+  legacyMongoId String?  @unique
+  name          String
+  plan          String   @default("free")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  users      User[]
+  categories Category[]
+  products   Product[]
+  movements  StockMovement[]
+
+  @@map("companies")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  legacyMongoId String?  @unique
+  name          String
+  email         String   @unique
+  password      String?
+  role          String   @default("User")
+  status        String   @default("Active")
+  department    String?
+  authProvider  String   @default("credentials")
+  tokenVersion  Int      @default(0)
+  avatar        String?
+  companyId     String?
+  company       Company? @relation(fields: [companyId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([companyId])
+  @@map("users")
+}
+
+model Category {
+  id            String     @id @default(uuid())
+  legacyMongoId String?    @unique
+  companyId     String
+  company       Company    @relation(fields: [companyId], references: [id])
+  name          String
+  description   String?
+  parentId      String?
+  parent        Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children      Category[] @relation("CategoryTree")
+  path          String     @default("")
+  level         Int        @default(0)
+  customFields  Json?
+  sortOrder     Int        @default(0)
+  isActive      Boolean    @default(true)
+  isDeleted     Boolean    @default(false)
+  productCount  Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([companyId])
+  @@map("categories")
+}
+
+model Product {
+  id            String   @id @default(uuid())
+  legacyMongoId String?  @unique
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id])
+  name          String
+  type          String   @default("Inventory Item")
+  sku           String
+  description   String?
+  category      String?
+  unit          String   @default("pcs")
+  inventory     Json?
+  costing       Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  movements StockMovement[]
+
+  @@index([companyId])
+  @@index([companyId, sku])
+  @@map("products")
+}
+
+model StockMovement {
+  id             String   @id @default(uuid())
+  legacyMongoId  String?  @unique
+  companyId      String
+  company        Company  @relation(fields: [companyId], references: [id])
+  movementNumber String
+  productId      String
+  product        Product  @relation(fields: [productId], references: [id])
+  movementType   String
+  direction      String
+  quantity       Float
+  previousStock  Float
+  newStock       Float
+  costing        Json?
+  createdAt      DateTime @default(now())
+
+  @@index([companyId])
+  @@index([productId])
+  @@map("stock_movements")
+}

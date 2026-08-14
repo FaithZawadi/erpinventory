@@ -1,0 +1,24 @@
+# Local PostgreSQL for the migration. Bring it up with:
+#   docker compose -f docker-compose.postgres.yml up -d
+# Then set in .env.local:
+#   DATABASE_URL=postgresql://erp:erp@localhost:5432/erpinventory?schema=public
+services:
+  postgres:
+    image: postgres:16
+    container_name: erpinventory-pg
+    environment:
+      POSTGRES_USER: erp
+      POSTGRES_PASSWORD: erp
+      POSTGRES_DB: erpinventory
+    ports:
+      - "5432:5432"
+    volumes:
+      - erp_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U erp -d erpinventory"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  erp_pg_data:
