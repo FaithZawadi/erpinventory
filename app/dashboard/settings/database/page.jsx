@@ -6,7 +6,7 @@ import Company from "@/app/models/Company";
 import User from "@/app/models/user";
 import Category from "@/app/models/category";
 import Product from "@/app/models/product";
-import StockMovement from "@/app/models/stockmovement";
+import { StockMovement } from "@/app/models/stockmovement";
 import Invoice from "@/app/models/invoice";
 import Quote from "@/app/models/quote";
 import PurchaseOrder from "@/app/models/purchaseOrder";
