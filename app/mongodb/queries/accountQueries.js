@@ -455,6 +455,13 @@ export async function getAccountsWithBalances(
  * Returns tree structure for expand/collapse UI
  */
 export async function getAccountsGrouped() {
+  // Postgres read cutover (flag-gated). Returns the identical grouped shape as
+  // the Mongo path below, so the Chart of Accounts page needs no changes.
+  // Flip with DATA_BACKEND=postgres; unset to revert to MongoDB.
+  if ((process.env.DATA_BACKEND ?? "mongo") === "postgres") {
+    return getAccountsGroupedPostgres();
+  }
+
   await dbConnect();
 
   // Get tenant context
@@ -508,6 +515,57 @@ export async function getAccountsGrouped() {
       }
     } else {
       // Root account
+      rootsByType[account.accountType]?.push(node);
+    }
+  });
+
+  return rootsByType;
+}
+
+// Postgres implementation of getAccountsGrouped — reads the chart of accounts
+// from PostgreSQL via Prisma and returns the exact same grouped/hierarchical
+// shape. Tenant is resolved by mapping the Mongo companyId to the migrated
+// company via its legacyMongoId, so it works for both scoped users and the
+// cross-tenant SuperAdmin. Dynamically imports Prisma so nothing loads it in
+// the default (Mongo) path.
+async function getAccountsGroupedPostgres() {
+  const { companyId, isSuperAdmin } = await getTenantContext();
+  const { default: prisma } = await import("@/lib/prisma");
+
+  const where = { isActive: true };
+  if (!isSuperAdmin && companyId) {
+    where.company = { legacyMongoId: String(companyId) };
+  }
+
+  const rows = await prisma.account.findMany({ where, orderBy: { accountCode: "asc" } });
+
+  const serialized = rows.map((r) => ({
+    _id: r.id,
+    accountCode: r.accountCode,
+    accountName: r.accountName,
+    accountType: r.accountType,
+    subType: r.subType,
+    parentId: r.parentAccountId,
+    canPost: r.canPost,
+    cachedBalance: r.cachedBalance,
+    isActive: r.isActive,
+    systemAccount: r.systemAccount,
+  }));
+
+  const accountMap = new Map();
+  const rootsByType = { asset: [], liability: [], equity: [], revenue: [], expense: [] };
+
+  serialized.forEach((account) => {
+    accountMap.set(account._id, { ...account, children: [] });
+  });
+
+  serialized.forEach((account) => {
+    const node = accountMap.get(account._id);
+    if (account.parentId) {
+      const parent = accountMap.get(account.parentId);
+      if (parent) parent.children.push(node);
+      else rootsByType[account.accountType]?.push(node);
+    } else {
       rootsByType[account.accountType]?.push(node);
     }
   });
