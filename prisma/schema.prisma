@@ -39,8 +39,13 @@ model Company {
   quotes         Quote[]
   purchaseOrders PurchaseOrder[]
   bills          Bill[]
-  accounts       Account[]
-  journalEntries JournalEntry[]
+  accounts         Account[]
+  journalEntries   JournalEntry[]
+  departments      Department[]
+  employeeProfiles EmployeeProfile[]
+  payrollRuns      PayrollRun[]
+  payrollEntries   PayrollEntry[]
+  leaveRequests    LeaveRequest[]
 
   @@map("companies")
 }
@@ -423,4 +428,140 @@ model JournalLine {
   @@index([journalEntryId])
   @@index([accountId])
   @@map("journal_lines")
+}
+
+// ── Phase 4: HR / Payroll ────────────────────────────────────────────────────
+// Department tree, employee profiles, and payroll runs whose per-employee
+// entries are a real child table (payroll_runs → payroll_entries), plus leave
+// requests. Complex nested sub-docs (personalInfo, earnings, deductions) are
+// kept in `raw` while the key columns are promoted for querying.
+
+model Department {
+  id                 String       @id @default(uuid())
+  legacyMongoId      String?      @unique
+  companyId          String
+  company            Company      @relation(fields: [companyId], references: [id])
+  code               String
+  name               String
+  description        String?
+  parentDepartmentId String?
+  parentDepartment   Department?  @relation("DeptTree", fields: [parentDepartmentId], references: [id])
+  childDepartments   Department[] @relation("DeptTree")
+  isActive           Boolean      @default(true)
+  raw                Json?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  payrollRuns PayrollRun[]
+
+  @@index([companyId])
+  @@map("departments")
+}
+
+model EmployeeProfile {
+  id                 String   @id @default(uuid())
+  legacyMongoId      String?  @unique
+  companyId          String
+  company            Company  @relation(fields: [companyId], references: [id])
+  employeeNumber     String?
+  firstName          String?
+  lastName           String?
+  email              String?
+  partyLegacyId      String?
+  userLegacyId       String?
+  departmentLegacyId String?
+  raw                Json?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  payrollEntries PayrollEntry[]
+  leaveRequests  LeaveRequest[]
+
+  @@index([companyId])
+  @@map("employee_profiles")
+}
+
+model PayrollRun {
+  id               String      @id @default(uuid())
+  legacyMongoId    String?     @unique
+  companyId        String
+  company          Company     @relation(fields: [companyId], references: [id])
+  payrollNumber    String
+  periodMonth      Int?
+  periodYear       Int?
+  scope            String      @default("all")
+  departmentId     String?
+  department       Department? @relation(fields: [departmentId], references: [id])
+  status           String      @default("draft")
+  currency         String      @default("KES")
+  employeeCount    Int         @default(0)
+  totalGrossPay    Float       @default(0)
+  totalDeductions  Float       @default(0)
+  totalNetPay      Float       @default(0)
+  totalPAYE        Float       @default(0)
+  totalNSSF        Float       @default(0)
+  totalSHIF        Float       @default(0)
+  totalHousingLevy Float       @default(0)
+  raw              Json?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  entries PayrollEntry[]
+
+  @@index([companyId])
+  @@index([companyId, periodYear, periodMonth])
+  @@map("payroll_runs")
+}
+
+model PayrollEntry {
+  id                String           @id @default(uuid())
+  legacyMongoId     String?          @unique
+  companyId         String
+  company           Company          @relation(fields: [companyId], references: [id])
+  payrollRunId      String
+  payrollRun        PayrollRun       @relation(fields: [payrollRunId], references: [id], onDelete: Cascade)
+  employeeProfileId String?
+  employeeProfile   EmployeeProfile? @relation(fields: [employeeProfileId], references: [id])
+  profileLegacyId   String?
+  partyLegacyId     String?
+  periodMonth       Int?
+  periodYear        Int?
+  basicSalary       Float            @default(0)
+  grossPay          Float            @default(0)
+  paye              Float            @default(0)
+  nssf              Float            @default(0)
+  shif              Float            @default(0)
+  housingLevy       Float            @default(0)
+  totalDeductions   Float            @default(0)
+  netPay            Float            @default(0)
+  raw               Json?
+  createdAt         DateTime         @default(now())
+
+  @@index([companyId])
+  @@index([payrollRunId])
+  @@map("payroll_entries")
+}
+
+model LeaveRequest {
+  id                String           @id @default(uuid())
+  legacyMongoId     String?          @unique
+  companyId         String
+  company           Company          @relation(fields: [companyId], references: [id])
+  leaveNumber       String
+  employeeName      String?
+  partyLegacyId     String?
+  employeeProfileId String?
+  employeeProfile   EmployeeProfile? @relation(fields: [employeeProfileId], references: [id])
+  leaveType         String?
+  fromDate          DateTime?
+  toDate            DateTime?
+  totalDays         Float            @default(0)
+  halfDay           Boolean          @default(false)
+  status            String           @default("pending")
+  raw               Json?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([companyId])
+  @@map("leave_requests")
 }
