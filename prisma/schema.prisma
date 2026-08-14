@@ -35,6 +35,8 @@ model Company {
   categories Category[]
   products   Product[]
   movements  StockMovement[]
+  invoices   Invoice[]
+  quotes     Quote[]
 
   @@map("companies")
 }
@@ -126,4 +128,109 @@ model StockMovement {
   @@index([companyId])
   @@index([productId])
   @@map("stock_movements")
+}
+
+// ── Phase 1: Sales ───────────────────────────────────────────────────────────
+// Invoice/Quote line items become proper child tables (invoice_lines,
+// quote_lines) with FKs — the relational win over embedded Mongo arrays.
+// `raw` Json preserves any header fields not yet promoted to columns so the
+// ETL is lossless while the slice is hardened.
+
+model Invoice {
+  id            String   @id @default(uuid())
+  legacyMongoId String?  @unique
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id])
+  invoiceNumber String
+  invoiceDate   DateTime?
+  dueDate       DateTime?
+  status        String   @default("draft")
+  customerRef   String?
+  customerName  String?
+  customerEmail String?
+  currency      String   @default("KES")
+  subtotal      Float    @default(0)
+  taxTotal      Float    @default(0)
+  discountTotal Float    @default(0)
+  total         Float    @default(0)
+  amountPaid    Float    @default(0)
+  balance       Float    @default(0)
+  raw           Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  lines InvoiceLine[]
+
+  @@index([companyId])
+  @@index([companyId, status])
+  @@map("invoices")
+}
+
+model InvoiceLine {
+  id              String  @id @default(uuid())
+  legacyKey       String? @unique
+  invoiceId       String
+  invoice         Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  lineNumber      Int     @default(0)
+  itemType        String  @default("product")
+  productLegacyId String?
+  description     String
+  unit            String  @default("pcs")
+  quantity        Float   @default(0)
+  unitPrice       Float   @default(0)
+  taxRate         Float   @default(16)
+  taxAmount       Float   @default(0)
+  discountAmount  Float   @default(0)
+  lineTotal       Float   @default(0)
+
+  @@index([invoiceId])
+  @@map("invoice_lines")
+}
+
+model Quote {
+  id            String   @id @default(uuid())
+  legacyMongoId String?  @unique
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id])
+  quoteNumber   String
+  quoteDate     DateTime?
+  status        String   @default("draft")
+  customerRef   String?
+  customerName  String?
+  customerEmail String?
+  currency      String   @default("KES")
+  subtotal      Float    @default(0)
+  taxTotal      Float    @default(0)
+  discountTotal Float    @default(0)
+  total         Float    @default(0)
+  raw           Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  lines QuoteLine[]
+
+  @@index([companyId])
+  @@index([companyId, status])
+  @@map("quotes")
+}
+
+model QuoteLine {
+  id              String  @id @default(uuid())
+  legacyKey       String? @unique
+  quoteId         String
+  quote           Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  lineNumber      Int     @default(0)
+  itemType        String  @default("product")
+  productLegacyId String?
+  description     String
+  unit            String  @default("pcs")
+  quantity        Float   @default(0)
+  unitPrice       Float   @default(0)
+  taxRate         Float   @default(16)
+  taxAmount       Float   @default(0)
+  discountAmount  Float   @default(0)
+  lineTotal       Float   @default(0)
+
+  @@index([quoteId])
+  @@map("quote_lines")
 }
