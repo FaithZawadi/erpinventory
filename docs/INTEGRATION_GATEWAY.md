@@ -40,14 +40,39 @@ rate limit — the fastest way for an integrator to confirm their key works.
 
 ## Current endpoints
 
-| Method | Path | Purpose |
-|---|---|---|
-| GET  | `/api/v1/auth/token-info` | Verify key, inspect scopes & rate limit |
-| POST | `/api/v1/weighbridge/tickets` | Ingest a weighbridge ticket |
-| GET  | `/api/v1/weighbridge/tickets/{id}` | Fetch a ticket |
-| POST | `/api/v1/coffee-coop/intake` | Post a coffee-coop intake entry |
-| GET/POST | `/api/v1/webhooks` | List / register webhook subscriptions |
-| ...  | `/api/v1/webhooks/{id}` | Manage a subscription |
+| Method | Path | Scope | Purpose |
+|---|---|---|---|
+| GET  | `/api/v1/auth/token-info` | — | Verify key, inspect scopes & rate limit |
+| GET  | `/api/v1/openapi` | — (public) | OpenAPI 3.0 spec for client generation |
+| GET/POST | `/api/v1/products` | `inventory:read` / `inventory:write` | List / create products |
+| GET/PATCH | `/api/v1/products/{id}` | `inventory:read` / `inventory:write` | Get / update a product |
+| GET/POST | `/api/v1/contacts` | `contacts:read` / `contacts:write` | List / create customers & suppliers |
+| GET  | `/api/v1/contacts/{id}` | `contacts:read` | Get a contact |
+| GET  | `/api/v1/invoices` | `invoices:read` | List invoices (read-only) |
+| GET  | `/api/v1/invoices/{id}` | `invoices:read` | Get an invoice |
+| GET  | `/api/v1/purchase-orders` | `orders:read` | List purchase orders (read-only) |
+| POST | `/api/v1/weighbridge/tickets` | `collection:write` | Ingest a weighbridge ticket |
+| GET  | `/api/v1/weighbridge/tickets/{id}` | `collection:write` | Fetch a ticket |
+| POST | `/api/v1/coffee-coop/intake` | `collection:write` | Post a coffee-coop intake entry |
+| GET/POST | `/api/v1/webhooks` | `webhooks:manage` | List / register webhook subscriptions |
+| ...  | `/api/v1/webhooks/{id}` | `webhooks:manage` | Manage a subscription |
+
+Every endpoint is **tenant-scoped** to the API key's company. List endpoints accept
+`?page=`, `?limit=` (max 200) and `?q=` (search). Invoice and purchase-order
+*writes* are intentionally not exposed — issuing them has journal/stock side
+effects that must run through the in-app flow.
+
+### Generate a typed client from the spec
+
+The gateway serves its own OpenAPI document at `GET /api/v1/openapi`:
+
+```
+# Python
+openapi-python-client generate --url https://your-host/api/v1/openapi
+
+# C# (NSwag)
+nswag openapi2csclient /input:https://your-host/api/v1/openapi /output:QaliSuiteClient.cs
+```
 
 ### Adding a new endpoint (the pattern)
 
