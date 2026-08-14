@@ -35,8 +35,10 @@ model Company {
   categories Category[]
   products   Product[]
   movements  StockMovement[]
-  invoices   Invoice[]
-  quotes     Quote[]
+  invoices       Invoice[]
+  quotes         Quote[]
+  purchaseOrders PurchaseOrder[]
+  bills          Bill[]
 
   @@map("companies")
 }
@@ -233,4 +235,100 @@ model QuoteLine {
 
   @@index([quoteId])
   @@map("quote_lines")
+}
+
+// ── Phase 2: Purchases ───────────────────────────────────────────────────────
+model PurchaseOrder {
+  id                   String    @id @default(uuid())
+  legacyMongoId        String?   @unique
+  companyId            String
+  company              Company   @relation(fields: [companyId], references: [id])
+  poNumber             String
+  poDate               DateTime?
+  expectedDeliveryDate DateTime?
+  status               String    @default("draft")
+  supplierRef          String?
+  supplierName         String?
+  supplierEmail        String?
+  currency             String    @default("KES")
+  subtotal             Float     @default(0)
+  taxTotal             Float     @default(0)
+  total                Float     @default(0)
+  raw                  Json?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  lines PurchaseOrderLine[]
+
+  @@index([companyId])
+  @@index([companyId, status])
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderLine {
+  id              String        @id @default(uuid())
+  legacyKey       String?       @unique
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  lineNumber      Int           @default(0)
+  productLegacyId String?
+  description     String
+  unit            String        @default("pcs")
+  quantity        Float         @default(0)
+  unitPrice       Float         @default(0)
+  vatRate         Float         @default(0)
+  vatAmount       Float         @default(0)
+  lineTotal       Float         @default(0)
+
+  @@index([purchaseOrderId])
+  @@map("purchase_order_lines")
+}
+
+model Bill {
+  id                    String    @id @default(uuid())
+  legacyMongoId         String?   @unique
+  companyId             String
+  company               Company   @relation(fields: [companyId], references: [id])
+  billNumber            String
+  supplierInvoiceNumber String?
+  billDate              DateTime?
+  dueDate               DateTime?
+  status                String    @default("draft")
+  supplierRef           String?
+  supplierName          String?
+  supplierEmail         String?
+  currency              String    @default("KES")
+  subtotal              Float     @default(0)
+  taxTotal              Float     @default(0)
+  total                 Float     @default(0)
+  amountPaid            Float     @default(0)
+  balance               Float     @default(0)
+  raw                   Json?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  lines BillLine[]
+
+  @@index([companyId])
+  @@index([companyId, status])
+  @@map("bills")
+}
+
+model BillLine {
+  id              String  @id @default(uuid())
+  legacyKey       String? @unique
+  billId          String
+  bill            Bill    @relation(fields: [billId], references: [id], onDelete: Cascade)
+  lineNumber      Int     @default(0)
+  productLegacyId String?
+  description     String
+  unit            String  @default("pcs")
+  quantity        Float   @default(0)
+  unitPrice       Float   @default(0)
+  vatRate         Float   @default(0)
+  vatAmount       Float   @default(0)
+  lineTotal       Float   @default(0)
+
+  @@index([billId])
+  @@map("bill_lines")
 }
