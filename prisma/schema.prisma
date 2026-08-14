@@ -39,6 +39,8 @@ model Company {
   quotes         Quote[]
   purchaseOrders PurchaseOrder[]
   bills          Bill[]
+  accounts       Account[]
+  journalEntries JournalEntry[]
 
   @@map("companies")
 }
@@ -331,4 +333,94 @@ model BillLine {
 
   @@index([billId])
   @@map("bill_lines")
+}
+
+// ── Phase 3: Finance (double-entry) ──────────────────────────────────────────
+// Chart of accounts (self-referencing tree) + journal entries whose lines are a
+// real child table. Each journal line carries debit/credit AND a genuine FK to
+// the account it posts to — the integrity Mongo's embedded arrays couldn't
+// enforce. accountLegacyId preserves the original Mongo ref so the FK can be
+// resolved during ETL even if accounts migrate in a later pass.
+
+model Account {
+  id              String    @id @default(uuid())
+  legacyMongoId   String?   @unique
+  companyId       String
+  company         Company   @relation(fields: [companyId], references: [id])
+  accountCode     String
+  accountName     String
+  accountType     String
+  subType         String?
+  parentAccountId String?
+  parentAccount   Account?  @relation("AccountTree", fields: [parentAccountId], references: [id])
+  childAccounts   Account[] @relation("AccountTree")
+  path            String    @default("")
+  level           Int       @default(0)
+  canPost         Boolean   @default(true)
+  systemAccount   String?
+  currency        String    @default("KES")
+  cachedBalance   Float     @default(0)
+  isActive        Boolean   @default(true)
+  taxable         Boolean   @default(false)
+  defaultTaxRate  Float     @default(0)
+  bankDetails     Json?
+  raw             Json?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  journalLines JournalLine[]
+
+  @@unique([companyId, accountCode])
+  @@index([companyId])
+  @@index([companyId, accountType])
+  @@map("accounts")
+}
+
+model JournalEntry {
+  id                String    @id @default(uuid())
+  legacyMongoId     String?   @unique
+  companyId         String
+  company           Company   @relation(fields: [companyId], references: [id])
+  entryNumber       String
+  entryDate         DateTime?
+  entryType         String    @default("manual")
+  description       String
+  status            String    @default("draft")
+  partyType         String?
+  partyRef          String?
+  dueDate           DateTime?
+  amountPaid        Float     @default(0)
+  amountOutstanding Float     @default(0)
+  isFullyPaid       Boolean   @default(false)
+  fiscalYear        Int?
+  fiscalMonth       Int?
+  raw               Json?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  lines JournalLine[]
+
+  @@index([companyId])
+  @@index([companyId, status])
+  @@index([companyId, entryDate])
+  @@map("journal_entries")
+}
+
+model JournalLine {
+  id              String       @id @default(uuid())
+  legacyKey       String?      @unique
+  journalEntryId  String
+  journalEntry    JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  lineNumber      Int          @default(0)
+  accountLegacyId String?
+  accountId       String?
+  account         Account?     @relation(fields: [accountId], references: [id])
+  accountType     String?
+  debit           Float        @default(0)
+  credit          Float        @default(0)
+  description     String?
+
+  @@index([journalEntryId])
+  @@index([accountId])
+  @@map("journal_lines")
 }
